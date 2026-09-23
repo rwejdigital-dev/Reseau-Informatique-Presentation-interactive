@@ -1,6 +1,6 @@
-# [Project name]
+# Réseau Informatique
 
-_Replace the heading above with the project's name, and this line with one sentence describing what this app does for users._
+Une présentation web interactive en français pour découvrir les réseaux informatiques, leurs équipements, les protocoles web et les bases de la sécurité.
 
 ## Run & Operate
 
@@ -22,23 +22,35 @@ _Replace the heading above with the project's name, and this line with one sente
 
 ## Where things live
 
-_Populate as you build — short repo map plus pointers to the source-of-truth file for DB schema, API contracts, theme files, etc._
+- `artifacts/reseau-informatique/src/App.tsx` — page unique et interactions des cinq chapitres
+- `artifacts/reseau-informatique/src/index.css` — thème visuel, typographies, textures et animations
+- `artifacts/reseau-informatique/vite.config.ts` — configuration Vite et routage de l’artefact
+- `artifacts/api-server/` — serveur partagé, non utilisé par cette présentation statique
 
 ## Architecture decisions
 
-_Populate as you build — non-obvious choices a reader couldn't infer from the code (3-5 bullets)._
+- La présentation est volontairement statique côté données : les interactions pédagogiques vivent dans l’état local React.
+- Les cinq chapitres sont des ancres dans une seule page afin de conserver une lecture continue et un défilement fluide.
+- Les images distantes Unsplash sont utilisées comme matière visuelle avec des superpositions et une palette dédiée pour préserver la lisibilité.
 
 ## Product
 
-_Describe the high-level user-facing capabilities of this app once they exist._
+- Navigation fixe par chapitres avec indicateur de progression
+- Introduction immersive avec CTA « Commencer »
+- Cartes interactives LAN / MAN / WAN
+- Sélecteur d’équipements : routeur, commutateur, fibre et RJ45
+- Schéma interactif Client → Protocoles → Serveur pour IP, DNS et HTTP(S)
+- Conclusion dédiée au pare-feu, au VPN et à la confiance
+- Mise en page responsive avec menu mobile et bouton « Retour en haut »
 
 ## User preferences
 
-_Populate as you build — explicit user instructions worth remembering across sessions._
+ 
 
 ## Gotchas
 
-_Populate as you build — sharp edges, "always run X before Y" rules._
+- Le serveur Vite attend `PORT` et `BASE_PATH` via le workflow géré de l’artefact.
+- La page dépend d’images Unsplash distantes ; les overlays de la page maintiennent la lisibilité si elles chargent lentement.
 
 ## Pointers
 

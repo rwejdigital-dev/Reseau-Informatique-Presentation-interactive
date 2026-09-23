@@ -1,0 +1,28 @@
+kind = "web"
+previewPath = "/"
+title = "Réseau Informatique"
+description = "Une présentation interactive et immersive en français qui explique les réseaux informatiques, leurs équipements, les protocoles web et les fondamentaux de la sécurité."
+version = "1.0.0"
+id = "artifacts/reseau-informatique"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 21509
+
+[services.development]
+run = "pnpm --filter @workspace/reseau-informatique run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/reseau-informatique", "run", "build" ]
+serve = "static"
+publicDir = "artifacts/reseau-informatique/dist/public"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "21509"
+BASE_PATH = "/"
