@@ -174,15 +174,6 @@
   background: linear-gradient(90deg, rgba(8,43,50,.75), transparent 70%);
 }
 
-.chapter-link::before {
-  content: '';
-  width: 5px; height: 5px; border-radius: 50%;
-  background: currentColor; opacity: .35;
-  transition: transform .3s ease, opacity .3s ease, background .3s ease;
-}
-.chapter-link.active::before { transform: scale(1.9); opacity: 1; color: hsl(var(--accent)); background: hsl(var(--accent)); }
-.chapter-link.active { color: hsl(var(--foreground)); }
-
 .hardware-card { transition: transform .45s cubic-bezier(.22, 1, .36, 1), background-color .45s ease, border-color .45s ease; }
 .hardware-card:hover { transform: translateY(-7px); }
 .hardware-card.selected { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); border-color: hsl(var(--accent) / .55); transform: translateY(-7px); }

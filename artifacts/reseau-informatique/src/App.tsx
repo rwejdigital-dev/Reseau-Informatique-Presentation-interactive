@@ -217,19 +217,6 @@ function AppPage() {
         )}
       </header>
 
-      <aside className="fixed bottom-0 left-0 top-[72px] z-30 hidden w-[82px] flex-col items-center justify-end pb-10 lg:flex" aria-label="Progression">
-        <div className="absolute bottom-0 top-0 w-px bg-[#b9dcd2]/20" />
-        <div className="relative flex flex-col items-center gap-7">
-          {chapters.map((chapter) => (
-            <button key={chapter.id} type="button" data-testid={`chapter-dot-${chapter.id}`} onClick={() => scrollTo(chapter.id)} aria-label={`Aller au chapitre ${chapter.number}`} className={`chapter-link relative flex items-center justify-center gap-3 pl-5 font-mono-craft text-[9px] uppercase tracking-[.12em] text-[#dce8df]/55 transition-colors hover:text-[#ed6a3c] ${activeChapter === chapter.id ? 'active' : ''}`}>
-              {activeChapter === chapter.id && <span className="absolute -left-[2px] h-10 w-px bg-[#ed6a3c]" />}
-              <span className="hidden whitespace-nowrap xl:inline">{chapter.label}</span>
-              <span>{chapter.number}</span>
-            </button>
-          ))}
-        </div>
-      </aside>
-
       <main>
         <section id="depart" className="relative flex min-h-[780px] scroll-mt-20 items-end overflow-hidden bg-[#082b32] text-[#f2eee4] sm:min-h-[850px]">
           <div className="absolute inset-0 bg-[#082b32] bg-cover bg-center opacity-55" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=2200&q=85')" }} />
