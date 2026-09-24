@@ -168,17 +168,14 @@ function AppPage() {
   const selectedFlow = flowSteps.find((step) => step.id === flowStep) ?? flowSteps[0];
 
   return (
-    <div className="site-noise min-h-[100dvh] bg-[#f2eee4] text-[#12353a]">
-      <div className="fixed left-0 top-0 z-50 h-[3px] w-full bg-[#12353a]/10" aria-hidden="true">
+    <div className="site-noise min-h-[100dvh] bg-[#082b32] text-[#f2eee4]">
+      <div className="fixed left-0 top-0 z-50 h-[3px] w-full bg-[#b9dcd2]/15" aria-hidden="true">
         <div className="h-full bg-[#ed6a3c] transition-[width] duration-300 ease-out" style={{ width: `${progress}%` }} />
       </div>
 
       <header className="fixed inset-x-0 top-0 z-40 border-b border-[#b9dcd2]/20 bg-[#082b32]/90 text-[#f2eee4] backdrop-blur-xl">
         <div className="mx-auto flex h-[72px] max-w-[1440px] items-center justify-between px-5 sm:px-8 lg:px-12">
           <button type="button" data-testid="button-logo-home" onClick={() => scrollTo('depart')} className="group flex items-center gap-3 text-left">
-            <span className="relative flex h-9 w-9 items-center justify-center rounded-full border border-[#ed6a3c] text-[#ed6a3c]">
-              <span className="h-2 w-2 rounded-full bg-[#ed6a3c] shadow-[0_0_0_5px_rgba(237,106,60,.16)]" />
-            </span>
             <span className="font-mono-craft text-[10px] font-medium uppercase tracking-[.18em] text-[#dce8df] transition-colors group-hover:text-[#ed6a3c]">
               Réseau<br />informatique
             </span>
@@ -221,10 +218,10 @@ function AppPage() {
       </header>
 
       <aside className="fixed bottom-0 left-0 top-[72px] z-30 hidden w-[82px] flex-col items-center justify-end pb-10 lg:flex" aria-label="Progression">
-        <div className="absolute bottom-0 top-0 w-px bg-[#12353a]/10" />
+        <div className="absolute bottom-0 top-0 w-px bg-[#b9dcd2]/20" />
         <div className="relative flex flex-col items-center gap-7">
           {chapters.map((chapter) => (
-            <button key={chapter.id} type="button" data-testid={`chapter-dot-${chapter.id}`} onClick={() => scrollTo(chapter.id)} aria-label={`Aller au chapitre ${chapter.number}`} className={`chapter-link relative flex items-center justify-center gap-3 pl-5 font-mono-craft text-[9px] uppercase tracking-[.12em] text-[#12353a]/35 transition-colors hover:text-[#ed6a3c] ${activeChapter === chapter.id ? 'active' : ''}`}>
+            <button key={chapter.id} type="button" data-testid={`chapter-dot-${chapter.id}`} onClick={() => scrollTo(chapter.id)} aria-label={`Aller au chapitre ${chapter.number}`} className={`chapter-link relative flex items-center justify-center gap-3 pl-5 font-mono-craft text-[9px] uppercase tracking-[.12em] text-[#dce8df]/55 transition-colors hover:text-[#ed6a3c] ${activeChapter === chapter.id ? 'active' : ''}`}>
               {activeChapter === chapter.id && <span className="absolute -left-[2px] h-10 w-px bg-[#ed6a3c]" />}
               <span className="hidden whitespace-nowrap xl:inline">{chapter.label}</span>
               <span>{chapter.number}</span>
@@ -276,18 +273,18 @@ function AppPage() {
           </div>
         </section>
 
-        <section id="territoires" className="scroll-mt-20 bg-[#f2eee4] px-7 py-28 sm:px-14 sm:py-36 lg:px-32">
+        <section id="territoires" className="scroll-mt-20 bg-[#082b32] px-7 py-28 text-[#f2eee4] sm:px-14 sm:py-36 lg:px-32">
           <div className="mx-auto max-w-[1280px]">
             <div className="grid gap-14 lg:grid-cols-[.72fr_1.28fr]">
               <div>
                 <Reveal><span className="font-mono-craft text-[10px] uppercase tracking-[.2em] text-[#ed6a3c]">02 / Les territoires</span></Reveal>
                 <Reveal delay={1}><h2 className="mt-5 max-w-sm font-display text-[clamp(3.4rem,7vw,6.8rem)] font-semibold leading-[.78] tracking-[-.055em]">Des réseaux<br /><span className="text-[#ed6a3c]">à plusieurs</span><br />échelles.</h2></Reveal>
-                <Reveal delay={2}><p className="mt-9 max-w-xs text-sm leading-6 text-[#12353a]/65">Du câble sous votre bureau aux routes océaniques : un même geste, agrandi.</p></Reveal>
+                <Reveal delay={2}><p className="mt-9 max-w-xs text-sm leading-6 text-[#dce8df]/70">Du câble sous votre bureau aux routes océaniques : un même geste, agrandi.</p></Reveal>
                 <Reveal delay={3}>
                   <div className="mt-16 flex items-center gap-4">
-                    <span className="font-display text-6xl leading-none text-[#12353a]">{String(territory + 1).padStart(2, '0')}</span>
+                    <span className="font-display text-6xl leading-none text-[#f2eee4]">{String(territory + 1).padStart(2, '0')}</span>
                     <span className="h-px w-14 bg-[#ed6a3c]" />
-                    <span className="font-mono-craft text-[9px] uppercase tracking-[.17em] text-[#12353a]/45">03 territoires</span>
+                    <span className="font-mono-craft text-[9px] uppercase tracking-[.17em] text-[#dce8df]/55">03 territoires</span>
                   </div>
                 </Reveal>
               </div>
@@ -295,19 +292,19 @@ function AppPage() {
                 <div className="grid gap-3">
                   {territories.map((item, index) => (
                     <Reveal key={item.code} delay={index + 1}>
-                      <button type="button" data-testid={`territory-${item.code}`} onClick={() => setTerritory(index)} className={`group relative w-full overflow-hidden rounded-[2px] border p-6 text-left transition-all duration-500 sm:p-8 ${territory === index ? 'border-[#12353a] bg-[#12353a] text-[#f2eee4]' : 'border-[#12353a]/15 bg-[#ebe5d9] text-[#12353a] hover:border-[#ed6a3c]/60 hover:bg-[#eee9df]'}`}>
+                      <button type="button" data-testid={`territory-${item.code}`} onClick={() => setTerritory(index)} className={`group relative w-full overflow-hidden rounded-[2px] border p-6 text-left transition-all duration-500 sm:p-8 ${territory === index ? 'border-[#b9dcd2]/35 bg-[#12353a] text-[#f2eee4]' : 'border-[#b9dcd2]/20 bg-[#10383f] text-[#f2eee4] hover:border-[#ed6a3c]/60 hover:bg-[#16424a]'}`}>
                         <div className="flex items-start justify-between gap-4">
                           <div className="flex items-center gap-4">
-                            <span className={`font-mono-craft text-[11px] ${territory === index ? 'text-[#ed6a3c]' : 'text-[#12353a]/40'}`}>0{index + 1}</span>
+                            <span className={`font-mono-craft text-[11px] ${territory === index ? 'text-[#ed6a3c]' : 'text-[#b9dcd2]/70'}`}>0{index + 1}</span>
                             <span className="font-display text-4xl font-semibold">{item.code}</span>
                           </div>
-                          <ArrowRight size={17} className={`mt-1 transition-transform group-hover:translate-x-2 ${territory === index ? 'text-[#ed6a3c]' : 'text-[#12353a]/30'}`} />
+                          <ArrowRight size={17} className={`mt-1 transition-transform group-hover:translate-x-2 ${territory === index ? 'text-[#ed6a3c]' : 'text-[#b9dcd2]/60'}`} />
                         </div>
                         <div className="mt-5 grid gap-5 sm:grid-cols-[.8fr_1.2fr]">
-                          <span className={`font-mono-craft text-[9px] uppercase tracking-[.13em] ${territory === index ? 'text-[#b9dcd2]' : 'text-[#12353a]/45'}`}>{item.title}</span>
-                          <p className={`max-w-sm text-sm leading-6 ${territory === index ? 'text-[#dce8df]/75' : 'text-[#12353a]/65'}`}>{item.description}</p>
+                          <span className={`font-mono-craft text-[9px] uppercase tracking-[.13em] ${territory === index ? 'text-[#b9dcd2]' : 'text-[#b9dcd2]/80'}`}>{item.title}</span>
+                          <p className={`max-w-sm text-sm leading-6 ${territory === index ? 'text-[#dce8df]/75' : 'text-[#dce8df]/75'}`}>{item.description}</p>
                         </div>
-                        <div className={`mt-7 border-t pt-4 font-mono-craft text-[9px] uppercase tracking-[.15em] ${territory === index ? 'border-[#b9dcd2]/20 text-[#b9dcd2]/70' : 'border-[#12353a]/10 text-[#12353a]/40'}`}>{item.metric}</div>
+                        <div className={`mt-7 border-t pt-4 font-mono-craft text-[9px] uppercase tracking-[.15em] ${territory === index ? 'border-[#b9dcd2]/20 text-[#b9dcd2]/70' : 'border-[#b9dcd2]/15 text-[#dce8df]/60'}`}>{item.metric}</div>
                       </button>
                     </Reveal>
                   ))}
@@ -317,28 +314,28 @@ function AppPage() {
           </div>
         </section>
 
-        <section id="infrastructure" className="scroll-mt-20 bg-[#dce8df] px-7 py-28 sm:px-14 sm:py-36 lg:px-32">
+        <section id="infrastructure" className="scroll-mt-20 bg-[#082b32] px-7 py-28 text-[#f2eee4] sm:px-14 sm:py-36 lg:px-32">
           <div className="mx-auto max-w-[1280px]">
             <div className="flex flex-col justify-between gap-10 md:flex-row md:items-end">
               <div>
                 <Reveal><span className="font-mono-craft text-[10px] uppercase tracking-[.2em] text-[#ed6a3c]">03 / L’infrastructure</span></Reveal>
-                <Reveal delay={1}><h2 className="mt-5 max-w-xl font-display text-[clamp(3.7rem,8vw,8.2rem)] font-semibold leading-[.76] tracking-[-.06em] text-[#12353a]">Les gestes<br /><span className="text-[#ed6a3c]">du réseau.</span></h2></Reveal>
+                <Reveal delay={1}><h2 className="mt-5 max-w-xl font-display text-[clamp(3.7rem,8vw,8.2rem)] font-semibold leading-[.76] tracking-[-.06em] text-[#f2eee4]">Les gestes<br /><span className="text-[#ed6a3c]">du réseau.</span></h2></Reveal>
               </div>
-              <Reveal delay={2}><p className="max-w-[270px] text-sm leading-6 text-[#12353a]/60">Un réseau est une partition silencieuse. Chaque élément connaît son mouvement.</p></Reveal>
+              <Reveal delay={2}><p className="max-w-[270px] text-sm leading-6 text-[#dce8df]/70">Un réseau est une partition silencieuse. Chaque élément connaît son mouvement.</p></Reveal>
             </div>
             <div className="mt-16 grid gap-4 lg:grid-cols-[1fr_1fr_1fr]">
               {hardware.map((item, index) => {
                 const Icon = item.Icon;
                 return (
                   <Reveal key={item.id} delay={index + 1}>
-                    <button type="button" data-testid={`hardware-${item.id}`} onClick={() => setHardwareId(item.id)} className={`hardware-card group min-h-[310px] w-full border p-7 text-left sm:p-9 ${hardwareId === item.id ? 'selected' : 'border-[#12353a]/15 bg-[#f2eee4] text-[#12353a]'}`}>
+                    <button type="button" data-testid={`hardware-${item.id}`} onClick={() => setHardwareId(item.id)} className={`hardware-card group min-h-[310px] w-full border p-7 text-left sm:p-9 ${hardwareId === item.id ? 'selected' : 'border-[#b9dcd2]/20 bg-[#10383f] text-[#f2eee4]'}`}>
                       <div className="flex items-start justify-between">
-                        <div className={`flex h-12 w-12 items-center justify-center rounded-full border ${hardwareId === item.id ? 'border-[#ed6a3c] text-[#ed6a3c]' : 'border-[#12353a]/20 text-[#12353a]'}`}><Icon size={20} strokeWidth={1.4} /></div>
-                        <span className={`font-mono-craft text-[9px] uppercase tracking-[.16em] ${hardwareId === item.id ? 'text-[#b9dcd2]' : 'text-[#12353a]/40'}`}>{item.eyebrow}</span>
+                        <div className={`flex h-12 w-12 items-center justify-center rounded-full border ${hardwareId === item.id ? 'border-[#ed6a3c] text-[#ed6a3c]' : 'border-[#b9dcd2]/30 text-[#b9dcd2]'}`}><Icon size={20} strokeWidth={1.4} /></div>
+                        <span className={`font-mono-craft text-[9px] uppercase tracking-[.16em] ${hardwareId === item.id ? 'text-[#b9dcd2]' : 'text-[#b9dcd2]/75'}`}>{item.eyebrow}</span>
                       </div>
                       <h3 className="mt-20 font-display text-[42px] font-semibold leading-none">{item.title}</h3>
-                      <p className={`mt-5 text-sm leading-6 ${hardwareId === item.id ? 'text-[#dce8df]/75' : 'text-[#12353a]/60'}`}>{item.description}</p>
-                      <div className={`mt-6 flex items-center gap-2 font-mono-craft text-[9px] uppercase tracking-[.12em] ${hardwareId === item.id ? 'text-[#ed6a3c]' : 'text-[#12353a]/40'}`}><Check size={12} /> {item.detail}</div>
+                      <p className="mt-5 text-sm leading-6 text-[#dce8df]/75">{item.description}</p>
+                      <div className={`mt-6 flex items-center gap-2 font-mono-craft text-[9px] uppercase tracking-[.12em] ${hardwareId === item.id ? 'text-[#ed6a3c]' : 'text-[#b9dcd2]/75'}`}><Check size={12} /> {item.detail}</div>
                     </button>
                   </Reveal>
                 );
@@ -400,33 +397,33 @@ function AppPage() {
           </div>
         </section>
 
-        <section id="confiance" className="relative scroll-mt-20 overflow-hidden bg-[#ed6a3c] px-7 py-28 text-[#12353a] sm:px-14 sm:py-36 lg:px-32">
-          <div className="absolute -right-32 -top-36 h-[500px] w-[500px] rounded-full border border-[#12353a]/15" />
-          <div className="absolute -right-8 -top-12 h-[250px] w-[250px] rounded-full border border-[#12353a]/15" />
+        <section id="confiance" className="relative scroll-mt-20 overflow-hidden bg-[#082b32] px-7 py-28 text-[#f2eee4] sm:px-14 sm:py-36 lg:px-32">
+          <div className="absolute -right-32 -top-36 h-[500px] w-[500px] rounded-full border border-[#b9dcd2]/15" />
+          <div className="absolute -right-8 -top-12 h-[250px] w-[250px] rounded-full border border-[#b9dcd2]/15" />
           <div className="relative mx-auto max-w-[1280px]">
             <div className="grid gap-14 lg:grid-cols-[1fr_.82fr] lg:items-end">
               <div>
-                <Reveal><span className="font-mono-craft text-[10px] uppercase tracking-[.2em] text-[#12353a]/60">05 / La confiance</span></Reveal>
+                <Reveal><span className="font-mono-craft text-[10px] uppercase tracking-[.2em] text-[#b9dcd2]/75">05 / La confiance</span></Reveal>
                 <Reveal delay={1}><h2 className="mt-5 max-w-3xl font-display text-[clamp(4rem,10vw,10rem)] font-semibold leading-[.72] tracking-[-.065em]">Relier,<br /><span className="text-[#f2eee4]">mais protéger.</span></h2></Reveal>
-                <Reveal delay={2}><p className="mt-11 max-w-md text-[15px] leading-7 text-[#12353a]/70">Le réseau ouvre des portes. La sécurité décide lesquelles restent fermées — et pour qui.</p></Reveal>
+                <Reveal delay={2}><p className="mt-11 max-w-md text-[15px] leading-7 text-[#dce8df]/75">Le réseau ouvre des portes. La sécurité décide lesquelles restent fermées — et pour qui.</p></Reveal>
               </div>
               <Reveal delay={2}>
-                <div className="rounded-sm border border-[#12353a]/20 bg-[#f2eee4]/15 p-7 sm:p-9">
-                  <div className="flex items-center justify-between"><ShieldCheck size={31} strokeWidth={1.2} /><span className="font-mono-craft text-[9px] uppercase tracking-[.16em] text-[#12353a]/55">Deux réflexes</span></div>
+                <div className="rounded-sm border border-[#b9dcd2]/25 bg-[#10383f]/80 p-7 sm:p-9">
+                  <div className="flex items-center justify-between"><ShieldCheck size={31} strokeWidth={1.2} /><span className="font-mono-craft text-[9px] uppercase tracking-[.16em] text-[#b9dcd2]/75">Deux réflexes</span></div>
                   <div className="mt-12 space-y-8">
-                    <div className="flex gap-5 border-b border-[#12353a]/15 pb-7"><span className="font-mono-craft text-[10px] text-[#12353a]/45">01</span><div><h3 className="font-display text-3xl">Pare-feu</h3><p className="mt-1 text-sm leading-6 text-[#12353a]/65">Filtrer les flux avant qu’ils n’atteignent le réseau.</p></div></div>
-                    <div className="flex gap-5"><span className="font-mono-craft text-[10px] text-[#12353a]/45">02</span><div><h3 className="font-display text-3xl">VPN</h3><p className="mt-1 text-sm leading-6 text-[#12353a]/65">Créer un tunnel privé dans un espace public.</p></div></div>
+                    <div className="flex gap-5 border-b border-[#b9dcd2]/20 pb-7"><span className="font-mono-craft text-[10px] text-[#b9dcd2]/65">01</span><div><h3 className="font-display text-3xl">Pare-feu</h3><p className="mt-1 text-sm leading-6 text-[#dce8df]/75">Filtrer les flux avant qu’ils n’atteignent le réseau.</p></div></div>
+                    <div className="flex gap-5"><span className="font-mono-craft text-[10px] text-[#b9dcd2]/65">02</span><div><h3 className="font-display text-3xl">VPN</h3><p className="mt-1 text-sm leading-6 text-[#dce8df]/75">Créer un tunnel privé dans un espace public.</p></div></div>
                   </div>
                 </div>
               </Reveal>
             </div>
             <Reveal delay={2}>
-              <div className="mt-28 flex flex-col justify-between gap-12 border-t border-[#12353a]/25 pt-9 sm:flex-row sm:items-end">
+              <div className="mt-28 flex flex-col justify-between gap-12 border-t border-[#b9dcd2]/25 pt-9 sm:flex-row sm:items-end">
                 <div>
-                  <div className="flex items-center gap-3 font-mono-craft text-[10px] uppercase tracking-[.18em] text-[#12353a]/55"><Sparkles size={14} /> Fin de la traversée</div>
+                  <div className="flex items-center gap-3 font-mono-craft text-[10px] uppercase tracking-[.18em] text-[#b9dcd2]/75"><Sparkles size={14} /> Fin de la traversée</div>
                   <p className="mt-5 max-w-xl font-display text-[clamp(2rem,4vw,3.8rem)] leading-[.88]">Invisible, jusqu’au moment où l’on comprend qu’elle nous relie.</p>
                 </div>
-                <button type="button" data-testid="button-retour-haut" onClick={() => scrollTo('depart')} className="group flex items-center gap-4 self-start rounded-full border border-[#12353a] px-5 py-3 font-mono-craft text-[10px] uppercase tracking-[.15em] transition-all hover:-translate-y-1 hover:bg-[#12353a] hover:text-[#f2eee4] sm:self-end">Retour en haut <ArrowUp size={15} className="transition-transform group-hover:-translate-y-1" /></button>
+                <button type="button" data-testid="button-retour-haut" onClick={() => scrollTo('depart')} className="group flex items-center gap-4 self-start rounded-full border border-[#b9dcd2]/70 px-5 py-3 font-mono-craft text-[10px] uppercase tracking-[.15em] transition-all hover:-translate-y-1 hover:bg-[#b9dcd2] hover:text-[#082b32] sm:self-end">Retour en haut <ArrowUp size={15} className="transition-transform group-hover:-translate-y-1" /></button>
               </div>
             </Reveal>
           </div>
