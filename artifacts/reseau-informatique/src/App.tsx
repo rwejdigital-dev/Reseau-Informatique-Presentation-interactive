@@ -35,33 +35,42 @@ type Chapter = {
 };
 
 const chapters: Chapter[] = [
-  { id: 'depart', number: '01', label: 'Le départ' },
-  { id: 'territoires', number: '02', label: 'Les territoires' },
-  { id: 'infrastructure', number: '03', label: 'L’infrastructure' },
-  { id: 'conversation', number: '04', label: 'La conversation' },
-  { id: 'confiance', number: '05', label: 'La confiance' },
+  { id: 'depart', number: '01', label: 'PRÉSENTATION' },
+  { id: 'territoires', number: '02', label: 'LES TERRITOIRES' },
+  { id: 'infrastructure', number: '03', label: 'INFRASTRUCTURE' },
+  { id: 'conversation', number: '04', label: 'LA CONVERSATION' },
+  { id: 'confiance', number: '05', label: 'LA CONFIANCE' },
 ];
 
 const territories = [
   {
     code: 'LAN',
-    title: 'Local Area Network',
-    description: 'Le réseau d’une pièce, d’un atelier ou d’un campus. Rapide, proche, presque tangible.',
-    metric: 'quelques mètres → quelques kilomètres',
+    title: 'Réseau local',
+    keyPoints: [
+      'Relie les équipements d’un logement, d’un bureau ou d’un campus.',
+      'Couvre une zone géographique limitée.',
+    ],
+    metric: 'du logement au campus',
     accent: 'coral',
   },
   {
     code: 'MAN',
-    title: 'Metropolitan Area Network',
-    description: 'Le lien qui traverse une ville : des bâtiments, des services publics, des quartiers qui se parlent.',
-    metric: 'une ville en mouvement',
+    title: 'Réseau métropolitain',
+    keyPoints: [
+      'Interconnecte plusieurs réseaux locaux dans une même agglomération.',
+      'S’appuie généralement sur des liaisons à haut débit.',
+    ],
+    metric: 'échelle d’une agglomération',
     accent: 'mint',
   },
   {
     code: 'WAN',
-    title: 'Wide Area Network',
-    description: 'Le réseau des longues distances. Une constellation de routes qui rend le lointain instantané.',
-    metric: 'un continent → la planète',
+    title: 'Réseau étendu',
+    keyPoints: [
+      'Relie des réseaux distants à l’échelle d’un pays ou de plusieurs continents.',
+      'Internet en est le plus vaste exemple public.',
+    ],
+    metric: 'du pays à l’échelle mondiale',
     accent: 'blue',
   },
 ];
@@ -70,7 +79,7 @@ type HardwareItem = {
   id: string;
   title: string;
   eyebrow: string;
-  description: string;
+  keyPoints: string[];
   Icon: LucideIcon;
   detail: string;
 };
@@ -80,32 +89,41 @@ const hardware: HardwareItem[] = [
     id: 'routeur',
     title: 'Routeur',
     eyebrow: 'décide',
-    description: 'Il lit l’adresse de destination et choisit le prochain saut, comme un aiguilleur dans la nuit.',
+    keyPoints: [
+      'Examine l’adresse IP de destination.',
+      'Choisit le prochain saut selon sa table de routage.',
+    ],
     Icon: RouterIcon,
-    detail: 'Il relie des réseaux différents.',
+    detail: 'Interconnecte des réseaux IP distincts.',
   },
   {
     id: 'commutateur',
     title: 'Commutateur',
     eyebrow: 'distribue',
-    description: 'Au cœur d’un réseau local, il envoie chaque paquet vers le bon appareil — jamais au hasard.',
+    keyPoints: [
+      'Apprend les adresses MAC des équipements connectés.',
+      'Achemine chaque trame vers le port approprié.',
+    ],
     Icon: Network,
-    detail: 'Il relie les appareils d’un même réseau.',
+    detail: 'Connecte les équipements d’un même réseau local.',
   },
   {
     id: 'fibre',
-    title: 'Fibre & RJ45',
+    title: 'Fibre optique et Ethernet',
     eyebrow: 'transporte',
-    description: 'La lumière dans le verre. Le cuivre dans la gaine. Deux matières, une même promesse : faire circuler.',
+    keyPoints: [
+      'La fibre optique transmet les données par impulsions lumineuses.',
+      'Le câble Ethernet à paires torsadées transporte des signaux électriques.',
+    ],
     Icon: Cable,
-    detail: 'La fibre privilégie la distance et le débit.',
+    detail: 'RJ45 désigne un connecteur Ethernet courant.',
   },
 ];
 
 const flowSteps = [
-  { id: 'ip', number: '01', label: 'IP', title: 'Trouver l’adresse', description: 'Chaque machine reçoit une adresse pour être reconnue sur le réseau.', Icon: Globe2 },
-  { id: 'dns', number: '02', label: 'DNS', title: 'Traduire le nom', description: 'Le DNS transforme un nom mémorable en adresse IP exploitable.', Icon: Layers3 },
-  { id: 'http', number: '03', label: 'HTTP(S)', title: 'Échanger', description: 'Le protocole organise la demande, la réponse et la protection du trajet.', Icon: FileKey2 },
+  { id: 'ip', number: '01', label: 'IP', title: 'Identifier la destination', description: 'L’adresse IP identifie une interface réseau et permet d’acheminer les paquets.', Icon: Globe2 },
+  { id: 'dns', number: '02', label: 'DNS', title: 'Résoudre le nom de domaine', description: 'Le DNS associe un nom de domaine à des enregistrements, notamment des adresses IP.', Icon: Layers3 },
+  { id: 'http', number: '03', label: 'HTTP(S)', title: 'Échanger en sécurité', description: 'HTTP définit les échanges client-serveur ; HTTPS les protège grâce au chiffrement TLS et à l’authentification du serveur.', Icon: FileKey2 },
 ];
 
 function useScrollProgress() {
@@ -180,17 +198,17 @@ function AppPage() {
               Réseau<br />informatique
             </span>
           </button>
-          <nav className="hidden items-center gap-7 lg:flex" aria-label="Navigation principale">
-            <span className="font-mono-craft text-[10px] uppercase tracking-[.16em] text-[#b9dcd2]/55">Une lecture en 5 chapitres</span>
+          <nav className="hidden items-center gap-4 lg:flex xl:gap-6" aria-label="Navigation principale">
             {chapters.map((chapter) => (
               <button
                 key={chapter.id}
                 type="button"
                 data-testid={`nav-${chapter.id}`}
                 onClick={() => scrollTo(chapter.id)}
-                className={`font-mono-craft text-[10px] uppercase tracking-[.12em] transition-colors hover:text-[#ed6a3c] ${activeChapter === chapter.id ? 'text-[#ed6a3c]' : 'text-[#dce8df]/70'}`}
+                aria-current={activeChapter === chapter.id ? 'location' : undefined}
+                className={`nav-chapter-link whitespace-nowrap font-mono-craft text-[8px] uppercase tracking-[.1em] transition-colors hover:text-[#ed6a3c] xl:text-[10px] xl:tracking-[.12em] ${activeChapter === chapter.id ? 'active text-[#b9dcd2]' : 'text-[#dce8df]/75'}`}
               >
-                {chapter.number}
+                {chapter.label}
               </button>
             ))}
           </nav>
@@ -208,7 +226,7 @@ function AppPage() {
           <div className="border-t border-[#b9dcd2]/20 bg-[#082b32] px-5 py-5 lg:hidden">
             <div className="grid grid-cols-2 gap-2">
               {chapters.map((chapter) => (
-                <button key={chapter.id} type="button" data-testid={`mobile-nav-${chapter.id}`} onClick={() => scrollTo(chapter.id)} className="flex items-center gap-3 py-3 text-left font-mono-craft text-[10px] uppercase tracking-[.12em] text-[#dce8df]/80">
+                <button key={chapter.id} type="button" data-testid={`mobile-nav-${chapter.id}`} onClick={() => scrollTo(chapter.id)} aria-current={activeChapter === chapter.id ? 'location' : undefined} className={`flex items-center gap-3 py-3 text-left font-mono-craft text-[10px] uppercase tracking-[.12em] transition-colors ${activeChapter === chapter.id ? 'text-[#b9dcd2]' : 'text-[#dce8df]/80'}`}>
                   <span className="text-[#ed6a3c]">{chapter.number}</span>{chapter.label}
                 </button>
               ))}
@@ -237,7 +255,7 @@ function AppPage() {
                 </Reveal>
                 <Reveal delay={2}>
                   <p className="mt-11 max-w-[440px] text-[15px] leading-7 text-[#dce8df]/75">
-                    Une traversée sensible de l’infrastructure qui relie chaque écran, chaque ville, chaque idée.
+                    Les réseaux relient les appareils et les services numériques afin d’acheminer les données, du réseau local à l’échelle mondiale.
                   </p>
                 </Reveal>
                 <Reveal delay={3}>
@@ -266,7 +284,7 @@ function AppPage() {
               <div>
                 <Reveal><span className="font-mono-craft text-[10px] uppercase tracking-[.2em] text-[#ed6a3c]">02 / Les territoires</span></Reveal>
                 <Reveal delay={1}><h2 className="mt-5 max-w-sm font-display text-[clamp(3.4rem,7vw,6.8rem)] font-semibold leading-[.78] tracking-[-.055em]">Des réseaux<br /><span className="text-[#ed6a3c]">à plusieurs</span><br />échelles.</h2></Reveal>
-                <Reveal delay={2}><p className="mt-9 max-w-xs text-sm leading-6 text-[#dce8df]/70">Du câble sous votre bureau aux routes océaniques : un même geste, agrandi.</p></Reveal>
+                <Reveal delay={2}><p className="mt-9 max-w-xs text-sm leading-6 text-[#dce8df]/70">Un même principe d’interconnexion, du réseau local aux liaisons internationales.</p></Reveal>
                 <Reveal delay={3}>
                   <div className="mt-16 flex items-center gap-4">
                     <span className="font-display text-6xl leading-none text-[#f2eee4]">{String(territory + 1).padStart(2, '0')}</span>
@@ -289,7 +307,9 @@ function AppPage() {
                         </div>
                         <div className="mt-5 grid gap-5 sm:grid-cols-[.8fr_1.2fr]">
                           <span className={`font-mono-craft text-[9px] uppercase tracking-[.13em] ${territory === index ? 'text-[#b9dcd2]' : 'text-[#b9dcd2]/80'}`}>{item.title}</span>
-                          <p className={`max-w-sm text-sm leading-6 ${territory === index ? 'text-[#dce8df]/75' : 'text-[#dce8df]/75'}`}>{item.description}</p>
+                          <ul className="max-w-sm list-disc space-y-1 pl-4 text-sm leading-6 text-[#dce8df]/75">
+                            {item.keyPoints.map((point) => <li key={point}>{point}</li>)}
+                          </ul>
                         </div>
                         <div className={`mt-7 border-t pt-4 font-mono-craft text-[9px] uppercase tracking-[.15em] ${territory === index ? 'border-[#b9dcd2]/20 text-[#b9dcd2]/70' : 'border-[#b9dcd2]/15 text-[#dce8df]/60'}`}>{item.metric}</div>
                       </button>
@@ -308,7 +328,7 @@ function AppPage() {
                 <Reveal><span className="font-mono-craft text-[10px] uppercase tracking-[.2em] text-[#ed6a3c]">03 / L’infrastructure</span></Reveal>
                 <Reveal delay={1}><h2 className="mt-5 max-w-xl font-display text-[clamp(3.7rem,8vw,8.2rem)] font-semibold leading-[.76] tracking-[-.06em] text-[#f2eee4]">Les gestes<br /><span className="text-[#ed6a3c]">du réseau.</span></h2></Reveal>
               </div>
-              <Reveal delay={2}><p className="max-w-[270px] text-sm leading-6 text-[#dce8df]/70">Un réseau est une partition silencieuse. Chaque élément connaît son mouvement.</p></Reveal>
+              <Reveal delay={2}><p className="max-w-[270px] text-sm leading-6 text-[#dce8df]/70">Routeurs, commutateurs et supports de transmission acheminent les données dans un réseau et entre plusieurs réseaux.</p></Reveal>
             </div>
             <div className="mt-16 grid gap-4 lg:grid-cols-[1fr_1fr_1fr]">
               {hardware.map((item, index) => {
@@ -321,7 +341,9 @@ function AppPage() {
                         <span className={`font-mono-craft text-[9px] uppercase tracking-[.16em] ${hardwareId === item.id ? 'text-[#b9dcd2]' : 'text-[#b9dcd2]/75'}`}>{item.eyebrow}</span>
                       </div>
                       <h3 className="mt-20 font-display text-[42px] font-semibold leading-none">{item.title}</h3>
-                      <p className="mt-5 text-sm leading-6 text-[#dce8df]/75">{item.description}</p>
+                      <ul className="mt-5 list-disc space-y-1 pl-4 text-sm leading-6 text-[#dce8df]/75">
+                        {item.keyPoints.map((point) => <li key={point}>{point}</li>)}
+                      </ul>
                       <div className={`mt-6 flex items-center gap-2 font-mono-craft text-[9px] uppercase tracking-[.12em] ${hardwareId === item.id ? 'text-[#ed6a3c]' : 'text-[#b9dcd2]/75'}`}><Check size={12} /> {item.detail}</div>
                     </button>
                   </Reveal>
@@ -332,7 +354,7 @@ function AppPage() {
               <div className="image-wash min-h-[260px] overflow-hidden bg-[#12353a] bg-cover bg-center p-8 text-[#f2eee4] sm:min-h-[340px] sm:p-14" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1523966211575-eb4a01e7dd51?auto=format&fit=crop&w=1800&q=82')" }}>
                 <div className="relative z-10 max-w-xl">
                   <div className="flex items-center gap-3 font-mono-craft text-[10px] uppercase tracking-[.18em] text-[#b9dcd2]"><Zap size={15} className="text-[#ed6a3c]" /> Matière en mouvement</div>
-                  <p className="mt-6 font-display text-[clamp(2.2rem,5vw,4.6rem)] leading-[.85]">La distance n’est qu’une question de bon conducteur.</p>
+                  <p className="mt-6 font-display text-[clamp(2.2rem,5vw,4.6rem)] leading-[.85]">Fibre optique ou cuivre : chaque support a sa portée, son débit et ses contraintes.</p>
                 </div>
                 <div className="absolute bottom-7 right-8 hidden text-right font-mono-craft text-[9px] uppercase tracking-[.15em] text-[#b9dcd2]/65 sm:block">Fibre optique<br /><span className="text-[#ed6a3c]">lumière · vitesse · précision</span></div>
               </div>
@@ -346,7 +368,7 @@ function AppPage() {
               <div>
                 <Reveal><span className="font-mono-craft text-[10px] uppercase tracking-[.2em] text-[#ed6a3c]">04 / La conversation</span></Reveal>
                 <Reveal delay={1}><h2 className="mt-5 max-w-md font-display text-[clamp(3.7rem,8vw,8rem)] font-semibold leading-[.77] tracking-[-.06em]">Client.<br /><span className="text-[#b9dcd2]">Serveur.</span><br />Dialogue.</h2></Reveal>
-                <Reveal delay={2}><p className="mt-9 max-w-sm text-sm leading-6 text-[#dce8df]/65">Derrière chaque page qui s’affiche, une conversation en trois temps. Rapide pour nous, millimétrée pour les machines.</p></Reveal>
+                <Reveal delay={2}><p className="mt-9 max-w-sm text-sm leading-6 text-[#dce8df]/65">Chaque page web résulte d’échanges coordonnés : résolution DNS, acheminement IP, requête HTTP(S), puis réponse du serveur.</p></Reveal>
               </div>
               <Reveal delay={2}>
                 <div className="relative flex min-h-[300px] items-center justify-between gap-3 overflow-hidden rounded-sm border border-[#b9dcd2]/20 bg-[#082b32]/70 p-5 sm:min-h-[350px] sm:p-10">
@@ -392,14 +414,14 @@ function AppPage() {
               <div>
                 <Reveal><span className="font-mono-craft text-[10px] uppercase tracking-[.2em] text-[#b9dcd2]/75">05 / La confiance</span></Reveal>
                 <Reveal delay={1}><h2 className="mt-5 max-w-3xl font-display text-[clamp(4rem,10vw,10rem)] font-semibold leading-[.72] tracking-[-.065em]">Relier,<br /><span className="text-[#f2eee4]">mais protéger.</span></h2></Reveal>
-                <Reveal delay={2}><p className="mt-11 max-w-md text-[15px] leading-7 text-[#dce8df]/75">Le réseau ouvre des portes. La sécurité décide lesquelles restent fermées — et pour qui.</p></Reveal>
+                <Reveal delay={2}><p className="mt-11 max-w-md text-[15px] leading-7 text-[#dce8df]/75">Comprendre le réseau, c’est comprendre comment les données circulent — et comment sécuriser ces échanges.</p></Reveal>
               </div>
               <Reveal delay={2}>
                 <div className="rounded-sm border border-[#b9dcd2]/25 bg-[#10383f]/80 p-7 sm:p-9">
                   <div className="flex items-center justify-between"><ShieldCheck size={31} strokeWidth={1.2} /><span className="font-mono-craft text-[9px] uppercase tracking-[.16em] text-[#b9dcd2]/75">Deux réflexes</span></div>
                   <div className="mt-12 space-y-8">
-                    <div className="flex gap-5 border-b border-[#b9dcd2]/20 pb-7"><span className="font-mono-craft text-[10px] text-[#b9dcd2]/65">01</span><div><h3 className="font-display text-3xl">Pare-feu</h3><p className="mt-1 text-sm leading-6 text-[#dce8df]/75">Filtrer les flux avant qu’ils n’atteignent le réseau.</p></div></div>
-                    <div className="flex gap-5"><span className="font-mono-craft text-[10px] text-[#b9dcd2]/65">02</span><div><h3 className="font-display text-3xl">VPN</h3><p className="mt-1 text-sm leading-6 text-[#dce8df]/75">Créer un tunnel privé dans un espace public.</p></div></div>
+                    <div className="flex gap-5 border-b border-[#b9dcd2]/20 pb-7"><span className="font-mono-craft text-[10px] text-[#b9dcd2]/65">01</span><div><h3 className="font-display text-3xl">Pare-feu</h3><p className="mt-1 text-sm leading-6 text-[#dce8df]/75">Autorise ou bloque le trafic selon des règles de sécurité.</p></div></div>
+                    <div className="flex gap-5"><span className="font-mono-craft text-[10px] text-[#b9dcd2]/65">02</span><div><h3 className="font-display text-3xl">VPN</h3><p className="mt-1 text-sm leading-6 text-[#dce8df]/75">Établit un tunnel chiffré entre un appareil et un réseau distant.</p></div></div>
                   </div>
                 </div>
               </Reveal>
@@ -408,7 +430,7 @@ function AppPage() {
               <div className="mt-28 flex flex-col justify-between gap-12 border-t border-[#b9dcd2]/25 pt-9 sm:flex-row sm:items-end">
                 <div>
                   <div className="flex items-center gap-3 font-mono-craft text-[10px] uppercase tracking-[.18em] text-[#b9dcd2]/75"><Sparkles size={14} /> Fin de la traversée</div>
-                  <p className="mt-5 max-w-xl font-display text-[clamp(2rem,4vw,3.8rem)] leading-[.88]">Invisible, jusqu’au moment où l’on comprend qu’elle nous relie.</p>
+                  <p className="mt-5 max-w-xl font-display text-[clamp(2rem,4vw,3.8rem)] leading-[.88]">Derrière chaque service numérique, une infrastructure relie les personnes et les systèmes.</p>
                 </div>
                 <button type="button" data-testid="button-retour-haut" onClick={() => scrollTo('depart')} className="group flex items-center gap-4 self-start rounded-full border border-[#b9dcd2]/70 px-5 py-3 font-mono-craft text-[10px] uppercase tracking-[.15em] transition-all hover:-translate-y-1 hover:bg-[#b9dcd2] hover:text-[#082b32] sm:self-end">Retour en haut <ArrowUp size={15} className="transition-transform group-hover:-translate-y-1" /></button>
               </div>

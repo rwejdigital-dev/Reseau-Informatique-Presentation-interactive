@@ -174,6 +174,25 @@
   background: linear-gradient(90deg, rgba(8,43,50,.75), transparent 70%);
 }
 
+.nav-chapter-link { position: relative; padding-block: .6rem; }
+.nav-chapter-link::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 1px;
+  background: #ed6a3c;
+  box-shadow: 0 0 8px rgba(237, 106, 60, .42);
+  opacity: 0;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .28s cubic-bezier(.22, 1, .36, 1), opacity .2s ease;
+}
+.nav-chapter-link.active::after,
+.nav-chapter-link:focus-visible::after { opacity: 1; transform: scaleX(1); }
+.nav-chapter-link:not(.active):hover::after { opacity: .75; transform: scaleX(.6); }
+
 .hardware-card { transition: transform .45s cubic-bezier(.22, 1, .36, 1), background-color .45s ease, border-color .45s ease; }
 .hardware-card:hover { transform: translateY(-7px); }
 .hardware-card.selected { background: hsl(var(--primary)); color: hsl(var(--primary-foreground)); border-color: hsl(var(--accent) / .55); transform: translateY(-7px); }
