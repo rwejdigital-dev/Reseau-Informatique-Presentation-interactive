@@ -1,451 +1,57 @@
-import { useEffect, useState } from 'react';
-import type { ReactNode } from 'react';
-import type { LucideIcon } from 'lucide-react';
-import {
-  ArrowDownRight,
-  ArrowRight,
-  ArrowUp,
-  Cable,
-  Check,
-  ChevronDown,
-  Cpu,
-  FileKey2,
-  Globe2,
-  Layers3,
-  Menu,
-  Network,
-  RadioTower,
-  Router as RouterIcon,
-  Server,
-  ShieldCheck,
-  Sparkles,
-  X,
-  Zap,
-} from 'lucide-react';
+import { useLayoutEffect } from 'react';
+import { AnimatePresence, MotionConfig, motion, useReducedMotion } from 'framer-motion';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { Route, Switch, useLocation } from 'wouter';
 import { Toaster } from '@/components/ui/toaster';
 import { TooltipProvider } from '@/components/ui/tooltip';
+import { SiteShell } from '@/components/SiteShell';
+import { ConversationPage } from '@/pages/ConversationPage';
+import { InfrastructurePage } from '@/pages/InfrastructurePage';
+import { PresentationPage } from '@/pages/PresentationPage';
+import { TerritoriesPage } from '@/pages/TerritoriesPage';
+import { TrustPage } from '@/pages/TrustPage';
 
 const queryClient = new QueryClient();
 
-type Chapter = {
-  id: string;
-  number: string;
-  label: string;
-};
-
-const chapters: Chapter[] = [
-  { id: 'depart', number: '01', label: 'PRÉSENTATION' },
-  { id: 'territoires', number: '02', label: 'LES TERRITOIRES' },
-  { id: 'infrastructure', number: '03', label: 'INFRASTRUCTURE' },
-  { id: 'conversation', number: '04', label: 'LA CONVERSATION' },
-  { id: 'confiance', number: '05', label: 'LA CONFIANCE' },
-];
-
-const territories = [
-  {
-    code: 'LAN',
-    title: 'Réseau local',
-    keyPoints: [
-      'Relie les équipements d’un logement, d’un bureau ou d’un campus.',
-      'Couvre une zone géographique limitée.',
-    ],
-    metric: 'du logement au campus',
-    accent: 'coral',
-  },
-  {
-    code: 'MAN',
-    title: 'Réseau métropolitain',
-    keyPoints: [
-      'Interconnecte plusieurs réseaux locaux dans une même agglomération.',
-      'S’appuie généralement sur des liaisons à haut débit.',
-    ],
-    metric: 'échelle d’une agglomération',
-    accent: 'mint',
-  },
-  {
-    code: 'WAN',
-    title: 'Réseau étendu',
-    keyPoints: [
-      'Relie des réseaux distants à l’échelle d’un pays ou de plusieurs continents.',
-      'Internet en est le plus vaste exemple public.',
-    ],
-    metric: 'du pays à l’échelle mondiale',
-    accent: 'blue',
-  },
-];
-
-type HardwareItem = {
-  id: string;
-  title: string;
-  eyebrow: string;
-  keyPoints: string[];
-  Icon: LucideIcon;
-  detail: string;
-};
-
-const hardware: HardwareItem[] = [
-  {
-    id: 'routeur',
-    title: 'Routeur',
-    eyebrow: 'décide',
-    keyPoints: [
-      'Examine l’adresse IP de destination.',
-      'Choisit le prochain saut selon sa table de routage.',
-    ],
-    Icon: RouterIcon,
-    detail: 'Interconnecte des réseaux IP distincts.',
-  },
-  {
-    id: 'commutateur',
-    title: 'Commutateur',
-    eyebrow: 'distribue',
-    keyPoints: [
-      'Apprend les adresses MAC des équipements connectés.',
-      'Achemine chaque trame vers le port approprié.',
-    ],
-    Icon: Network,
-    detail: 'Connecte les équipements d’un même réseau local.',
-  },
-  {
-    id: 'fibre',
-    title: 'Fibre optique et Ethernet',
-    eyebrow: 'transporte',
-    keyPoints: [
-      'La fibre optique transmet les données par impulsions lumineuses.',
-      'Le câble Ethernet à paires torsadées transporte des signaux électriques.',
-    ],
-    Icon: Cable,
-    detail: 'RJ45 désigne un connecteur Ethernet courant.',
-  },
-];
-
-const flowSteps = [
-  { id: 'ip', number: '01', label: 'IP', title: 'Identifier la destination', description: 'L’adresse IP identifie une interface réseau et permet d’acheminer les paquets.', Icon: Globe2 },
-  { id: 'dns', number: '02', label: 'DNS', title: 'Résoudre le nom de domaine', description: 'Le DNS associe un nom de domaine à des enregistrements, notamment des adresses IP.', Icon: Layers3 },
-  { id: 'http', number: '03', label: 'HTTP(S)', title: 'Échanger en sécurité', description: 'HTTP définit les échanges client-serveur ; HTTPS les protège grâce au chiffrement TLS et à l’authentification du serveur.', Icon: FileKey2 },
-];
-
-function useScrollProgress() {
-  const [progress, setProgress] = useState(0);
-  useEffect(() => {
-    const update = () => {
-      const scrollable = document.documentElement.scrollHeight - window.innerHeight;
-      setProgress(scrollable > 0 ? Math.min(100, Math.max(0, (window.scrollY / scrollable) * 100)) : 0);
-    };
-    update();
-    window.addEventListener('scroll', update, { passive: true });
-    window.addEventListener('resize', update);
-    return () => {
-      window.removeEventListener('scroll', update);
-      window.removeEventListener('resize', update);
-    };
-  }, []);
-  return progress;
+function NotFound() {
+  return (
+    <div className="flex min-h-[calc(100dvh-73px)] items-center justify-center bg-[#082b32] px-6 text-center text-[#f2eee4]">
+      <div>
+        <span className="font-mono-craft text-[10px] uppercase tracking-[.2em] text-[#ed6a3c]">Erreur 404</span>
+        <h1 className="mt-5 font-display text-6xl">Territoire inconnu.</h1>
+        <p className="mt-4 text-sm text-[#dce8df]/70">Cette adresse ne correspond à aucun chapitre.</p>
+      </div>
+    </div>
+  );
 }
 
-function Reveal({ children, className = '', delay = 0 }: { children: ReactNode; className?: string; delay?: number }) {
-  return <div className={`reveal ${delay ? `reveal-delay-${delay}` : ''} ${className}`}>{children}</div>;
-}
+function RoutedChapters() {
+  const [location] = useLocation();
+  const reducedMotion = useReducedMotion();
 
-function AppPage() {
-  const progress = useScrollProgress();
-  const [activeChapter, setActiveChapter] = useState('depart');
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [territory, setTerritory] = useState(0);
-  const [hardwareId, setHardwareId] = useState('routeur');
-  const [flowStep, setFlowStep] = useState('ip');
-
-  useEffect(() => {
-    const sections = chapters.map(({ id }) => document.getElementById(id)).filter(Boolean) as HTMLElement[];
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries.filter((entry) => entry.isIntersecting).sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
-        if (visible) setActiveChapter(visible.target.id);
-      },
-      { rootMargin: '-20% 0px -58% 0px', threshold: [0.05, 0.2, 0.5] },
-    );
-    sections.forEach((section) => observer.observe(section));
-    const revealObserver = new IntersectionObserver(
-      (entries) => entries.forEach((entry) => entry.isIntersecting && entry.target.classList.add('is-visible')),
-      { threshold: 0.08 },
-    );
-    document.querySelectorAll('.reveal').forEach((element) => revealObserver.observe(element));
-    return () => {
-      observer.disconnect();
-      revealObserver.disconnect();
-    };
-  }, []);
-
-  const scrollTo = (id: string) => {
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    setMenuOpen(false);
-  };
-
-  const selectedHardware = hardware.find((item) => item.id === hardwareId) ?? hardware[0];
-  const selectedFlow = flowSteps.find((step) => step.id === flowStep) ?? flowSteps[0];
+  useLayoutEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location]);
 
   return (
-    <div className="site-noise min-h-[100dvh] bg-[#082b32] text-[#f2eee4]">
-      <div className="fixed left-0 top-0 z-50 h-[3px] w-full bg-[#b9dcd2]/15" aria-hidden="true">
-        <div className="h-full bg-[#ed6a3c] transition-[width] duration-300 ease-out" style={{ width: `${progress}%` }} />
-      </div>
-
-      <header className="fixed inset-x-0 top-0 z-40 border-b border-[#b9dcd2]/20 bg-[#082b32]/90 text-[#f2eee4] backdrop-blur-xl">
-        <div className="mx-auto flex h-[72px] max-w-[1440px] items-center justify-between px-5 sm:px-8 lg:px-12">
-          <button type="button" data-testid="button-logo-home" onClick={() => scrollTo('depart')} className="group flex items-center gap-3 text-left">
-            <span className="font-mono-craft text-[10px] font-medium uppercase tracking-[.18em] text-[#dce8df] transition-colors group-hover:text-[#ed6a3c]">
-              Réseau<br />informatique
-            </span>
-          </button>
-          <nav className="hidden items-center gap-4 lg:flex xl:gap-6" aria-label="Navigation principale">
-            {chapters.map((chapter) => (
-              <button
-                key={chapter.id}
-                type="button"
-                data-testid={`nav-${chapter.id}`}
-                onClick={() => scrollTo(chapter.id)}
-                aria-current={activeChapter === chapter.id ? 'location' : undefined}
-                className={`nav-chapter-link whitespace-nowrap font-mono-craft text-[8px] uppercase tracking-[.1em] transition-colors hover:text-[#ed6a3c] xl:text-[10px] xl:tracking-[.12em] ${activeChapter === chapter.id ? 'active text-[#b9dcd2]' : 'text-[#dce8df]/75'}`}
-              >
-                {chapter.label}
-              </button>
-            ))}
-          </nav>
-          <button
-            type="button"
-            data-testid="button-mobile-menu"
-            aria-label={menuOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
-            onClick={() => setMenuOpen((open) => !open)}
-            className="flex h-10 w-10 items-center justify-center rounded-full border border-[#b9dcd2]/25 lg:hidden"
-          >
-            {menuOpen ? <X size={17} /> : <Menu size={17} />}
-          </button>
-        </div>
-        {menuOpen && (
-          <div className="border-t border-[#b9dcd2]/20 bg-[#082b32] px-5 py-5 lg:hidden">
-            <div className="grid grid-cols-2 gap-2">
-              {chapters.map((chapter) => (
-                <button key={chapter.id} type="button" data-testid={`mobile-nav-${chapter.id}`} onClick={() => scrollTo(chapter.id)} aria-current={activeChapter === chapter.id ? 'location' : undefined} className={`flex items-center gap-3 py-3 text-left font-mono-craft text-[10px] uppercase tracking-[.12em] transition-colors ${activeChapter === chapter.id ? 'text-[#b9dcd2]' : 'text-[#dce8df]/80'}`}>
-                  <span className="text-[#ed6a3c]">{chapter.number}</span>{chapter.label}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-      </header>
-
-      <main>
-        <section id="depart" className="relative flex min-h-[780px] scroll-mt-20 items-end overflow-hidden bg-[#082b32] text-[#f2eee4] sm:min-h-[850px]">
-          <div className="absolute inset-0 bg-[#082b32] bg-cover bg-center opacity-55" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=2200&q=85')" }} />
-          <div className="hero-grid absolute inset-0 opacity-75" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_72%_38%,rgba(185,220,210,.18),transparent_28%),linear-gradient(180deg,rgba(8,43,50,.1),#082b32_94%)]" />
-          <div className="relative mx-auto w-full max-w-[1440px] px-7 pb-20 pt-40 sm:px-14 sm:pb-28 lg:px-32">
-            <div className="grid items-end gap-16 lg:grid-cols-[1.2fr_.8fr]">
-              <div>
-                <Reveal>
-                  <div className="mb-7 flex items-center gap-3 font-mono-craft text-[10px] uppercase tracking-[.24em] text-[#b9dcd2]">
-                    <span className="h-px w-10 bg-[#ed6a3c]" /> Chapitre 01 <span className="text-[#b9dcd2]/45">/</span> L’invisible
-                  </div>
-                </Reveal>
-                <Reveal delay={1}>
-                  <h1 className="max-w-4xl font-display text-[clamp(4.6rem,13vw,11rem)] font-semibold leading-[.75] tracking-[-.06em] text-[#f2eee4]">
-                    Réseau<br /><span className="ml-[12%] text-[#b9dcd2]">informatique</span>
-                  </h1>
-                </Reveal>
-                <Reveal delay={2}>
-                  <p className="mt-11 max-w-[440px] text-[15px] leading-7 text-[#dce8df]/75">
-                    Les réseaux relient les appareils et les services numériques afin d’acheminer les données, du réseau local à l’échelle mondiale.
-                  </p>
-                </Reveal>
-                <Reveal delay={3}>
-                  <button type="button" data-testid="button-commencer" onClick={() => scrollTo('territoires')} className="group mt-9 inline-flex items-center gap-4 rounded-full border border-[#ed6a3c] bg-[#ed6a3c] px-5 py-3 font-mono-craft text-[10px] uppercase tracking-[.18em] text-[#fff4e8] transition-all hover:-translate-y-1 hover:bg-[#f47d53]">
-                    Commencer <ArrowDownRight size={15} className="transition-transform group-hover:translate-x-1 group-hover:translate-y-1" />
-                  </button>
-                </Reveal>
-              </div>
-              <Reveal delay={2} className="hidden lg:block">
-                <div className="ml-auto max-w-[280px] border-l border-[#b9dcd2]/30 pl-5">
-                  <div className="mb-8 flex items-center gap-2 text-[#ed6a3c]"><RadioTower size={16} /><span className="font-mono-craft text-[10px] uppercase tracking-[.17em]">Signal détecté</span></div>
-                  <p className="font-display text-[27px] leading-[1.05] text-[#dce8df]">« Le réseau n’est pas un lieu. C’est une relation. »</p>
-                  <div className="mt-7 flex items-center gap-2 font-mono-craft text-[9px] uppercase tracking-[.12em] text-[#b9dcd2]/55"><span className="h-1.5 w-1.5 rounded-full bg-[#ed6a3c]" /> Lecture estimée · 08 min</div>
-                </div>
-              </Reveal>
-            </div>
-          </div>
-          <div className="absolute bottom-7 right-7 hidden items-center gap-3 font-mono-craft text-[9px] uppercase tracking-[.16em] text-[#b9dcd2]/55 sm:flex lg:right-14">
-            <span>Faire défiler</span><ChevronDown size={14} className="animate-bounce text-[#ed6a3c]" />
-          </div>
-        </section>
-
-        <section id="territoires" className="scroll-mt-20 bg-[#082b32] px-7 py-28 text-[#f2eee4] sm:px-14 sm:py-36 lg:px-32">
-          <div className="mx-auto max-w-[1280px]">
-            <div className="grid gap-14 lg:grid-cols-[.72fr_1.28fr]">
-              <div>
-                <Reveal><span className="font-mono-craft text-[10px] uppercase tracking-[.2em] text-[#ed6a3c]">02 / Les territoires</span></Reveal>
-                <Reveal delay={1}><h2 className="mt-5 max-w-sm font-display text-[clamp(3.4rem,7vw,6.8rem)] font-semibold leading-[.78] tracking-[-.055em]">Des réseaux<br /><span className="text-[#ed6a3c]">à plusieurs</span><br />échelles.</h2></Reveal>
-                <Reveal delay={2}><p className="mt-9 max-w-xs text-sm leading-6 text-[#dce8df]/70">Un même principe d’interconnexion, du réseau local aux liaisons internationales.</p></Reveal>
-                <Reveal delay={3}>
-                  <div className="mt-16 flex items-center gap-4">
-                    <span className="font-display text-6xl leading-none text-[#f2eee4]">{String(territory + 1).padStart(2, '0')}</span>
-                    <span className="h-px w-14 bg-[#ed6a3c]" />
-                    <span className="font-mono-craft text-[9px] uppercase tracking-[.17em] text-[#dce8df]/55">03 territoires</span>
-                  </div>
-                </Reveal>
-              </div>
-              <div>
-                <div className="grid gap-3">
-                  {territories.map((item, index) => (
-                    <Reveal key={item.code} delay={index + 1}>
-                      <button type="button" data-testid={`territory-${item.code}`} onClick={() => setTerritory(index)} className={`group relative w-full overflow-hidden rounded-[2px] border p-6 text-left transition-all duration-500 sm:p-8 ${territory === index ? 'border-[#b9dcd2]/35 bg-[#12353a] text-[#f2eee4]' : 'border-[#b9dcd2]/20 bg-[#10383f] text-[#f2eee4] hover:border-[#ed6a3c]/60 hover:bg-[#16424a]'}`}>
-                        <div className="flex items-start justify-between gap-4">
-                          <div className="flex items-center gap-4">
-                            <span className={`font-mono-craft text-[11px] ${territory === index ? 'text-[#ed6a3c]' : 'text-[#b9dcd2]/70'}`}>0{index + 1}</span>
-                            <span className="font-display text-4xl font-semibold">{item.code}</span>
-                          </div>
-                          <ArrowRight size={17} className={`mt-1 transition-transform group-hover:translate-x-2 ${territory === index ? 'text-[#ed6a3c]' : 'text-[#b9dcd2]/60'}`} />
-                        </div>
-                        <div className="mt-5 grid gap-5 sm:grid-cols-[.8fr_1.2fr]">
-                          <span className={`font-mono-craft text-[9px] uppercase tracking-[.13em] ${territory === index ? 'text-[#b9dcd2]' : 'text-[#b9dcd2]/80'}`}>{item.title}</span>
-                          <ul className="max-w-sm list-disc space-y-1 pl-4 text-sm leading-6 text-[#dce8df]/75">
-                            {item.keyPoints.map((point) => <li key={point}>{point}</li>)}
-                          </ul>
-                        </div>
-                        <div className={`mt-7 border-t pt-4 font-mono-craft text-[9px] uppercase tracking-[.15em] ${territory === index ? 'border-[#b9dcd2]/20 text-[#b9dcd2]/70' : 'border-[#b9dcd2]/15 text-[#dce8df]/60'}`}>{item.metric}</div>
-                      </button>
-                    </Reveal>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section id="infrastructure" className="scroll-mt-20 bg-[#082b32] px-7 py-28 text-[#f2eee4] sm:px-14 sm:py-36 lg:px-32">
-          <div className="mx-auto max-w-[1280px]">
-            <div className="flex flex-col justify-between gap-10 md:flex-row md:items-end">
-              <div>
-                <Reveal><span className="font-mono-craft text-[10px] uppercase tracking-[.2em] text-[#ed6a3c]">03 / L’infrastructure</span></Reveal>
-                <Reveal delay={1}><h2 className="mt-5 max-w-xl font-display text-[clamp(3.7rem,8vw,8.2rem)] font-semibold leading-[.76] tracking-[-.06em] text-[#f2eee4]">Les gestes<br /><span className="text-[#ed6a3c]">du réseau.</span></h2></Reveal>
-              </div>
-              <Reveal delay={2}><p className="max-w-[270px] text-sm leading-6 text-[#dce8df]/70">Routeurs, commutateurs et supports de transmission acheminent les données dans un réseau et entre plusieurs réseaux.</p></Reveal>
-            </div>
-            <div className="mt-16 grid gap-4 lg:grid-cols-[1fr_1fr_1fr]">
-              {hardware.map((item, index) => {
-                const Icon = item.Icon;
-                return (
-                  <Reveal key={item.id} delay={index + 1}>
-                    <button type="button" data-testid={`hardware-${item.id}`} onClick={() => setHardwareId(item.id)} className={`hardware-card group min-h-[310px] w-full border p-7 text-left sm:p-9 ${hardwareId === item.id ? 'selected' : 'border-[#b9dcd2]/20 bg-[#10383f] text-[#f2eee4]'}`}>
-                      <div className="flex items-start justify-between">
-                        <div className={`flex h-12 w-12 items-center justify-center rounded-full border ${hardwareId === item.id ? 'border-[#ed6a3c] text-[#ed6a3c]' : 'border-[#b9dcd2]/30 text-[#b9dcd2]'}`}><Icon size={20} strokeWidth={1.4} /></div>
-                        <span className={`font-mono-craft text-[9px] uppercase tracking-[.16em] ${hardwareId === item.id ? 'text-[#b9dcd2]' : 'text-[#b9dcd2]/75'}`}>{item.eyebrow}</span>
-                      </div>
-                      <h3 className="mt-20 font-display text-[42px] font-semibold leading-none">{item.title}</h3>
-                      <ul className="mt-5 list-disc space-y-1 pl-4 text-sm leading-6 text-[#dce8df]/75">
-                        {item.keyPoints.map((point) => <li key={point}>{point}</li>)}
-                      </ul>
-                      <div className={`mt-6 flex items-center gap-2 font-mono-craft text-[9px] uppercase tracking-[.12em] ${hardwareId === item.id ? 'text-[#ed6a3c]' : 'text-[#b9dcd2]/75'}`}><Check size={12} /> {item.detail}</div>
-                    </button>
-                  </Reveal>
-                );
-              })}
-            </div>
-            <Reveal delay={2} className="mt-20">
-              <div className="image-wash min-h-[260px] overflow-hidden bg-[#12353a] bg-cover bg-center p-8 text-[#f2eee4] sm:min-h-[340px] sm:p-14" style={{ backgroundImage: "url('https://images.unsplash.com/photo-1523966211575-eb4a01e7dd51?auto=format&fit=crop&w=1800&q=82')" }}>
-                <div className="relative z-10 max-w-xl">
-                  <div className="flex items-center gap-3 font-mono-craft text-[10px] uppercase tracking-[.18em] text-[#b9dcd2]"><Zap size={15} className="text-[#ed6a3c]" /> Matière en mouvement</div>
-                  <p className="mt-6 font-display text-[clamp(2.2rem,5vw,4.6rem)] leading-[.85]">Fibre optique ou cuivre : chaque support a sa portée, son débit et ses contraintes.</p>
-                </div>
-                <div className="absolute bottom-7 right-8 hidden text-right font-mono-craft text-[9px] uppercase tracking-[.15em] text-[#b9dcd2]/65 sm:block">Fibre optique<br /><span className="text-[#ed6a3c]">lumière · vitesse · précision</span></div>
-              </div>
-            </Reveal>
-          </div>
-        </section>
-
-        <section id="conversation" className="scroll-mt-20 overflow-hidden bg-[#12353a] px-7 py-28 text-[#f2eee4] sm:px-14 sm:py-36 lg:px-32">
-          <div className="mx-auto max-w-[1280px]">
-            <div className="grid items-end gap-12 lg:grid-cols-[.85fr_1.15fr]">
-              <div>
-                <Reveal><span className="font-mono-craft text-[10px] uppercase tracking-[.2em] text-[#ed6a3c]">04 / La conversation</span></Reveal>
-                <Reveal delay={1}><h2 className="mt-5 max-w-md font-display text-[clamp(3.7rem,8vw,8rem)] font-semibold leading-[.77] tracking-[-.06em]">Client.<br /><span className="text-[#b9dcd2]">Serveur.</span><br />Dialogue.</h2></Reveal>
-                <Reveal delay={2}><p className="mt-9 max-w-sm text-sm leading-6 text-[#dce8df]/65">Chaque page web résulte d’échanges coordonnés : résolution DNS, acheminement IP, requête HTTP(S), puis réponse du serveur.</p></Reveal>
-              </div>
-              <Reveal delay={2}>
-                <div className="relative flex min-h-[300px] items-center justify-between gap-3 overflow-hidden rounded-sm border border-[#b9dcd2]/20 bg-[#082b32]/70 p-5 sm:min-h-[350px] sm:p-10">
-                  <div className="absolute left-[16%] right-[16%] top-1/2 h-px bg-[#b9dcd2]/25" />
-                  <div className="absolute left-[16%] right-[16%] top-1/2 h-px origin-left bg-[#ed6a3c] transition-transform duration-700" style={{ transform: `scaleX(${(flowSteps.findIndex((step) => step.id === flowStep) + 1) / 3})` }} />
-                  <div className="absolute left-[15%] top-1/2 h-2 w-2 -translate-y-1/2 rounded-full bg-[#ed6a3c]" />
-                  <div className="absolute right-[15%] top-1/2 h-2 w-2 -translate-y-1/2 rounded-full bg-[#b9dcd2]" />
-                  <div className="relative z-10 flex flex-col items-center gap-4">
-                    <button type="button" data-testid="flow-client" onClick={() => setFlowStep('ip')} className={`flow-node flex h-16 w-16 items-center justify-center rounded-full border border-[#ed6a3c] bg-[#ed6a3c] text-[#fff4e8] sm:h-20 sm:w-20 ${flowStep === 'ip' ? 'active' : ''}`}><Cpu size={23} strokeWidth={1.4} /></button>
-                    <span className="font-mono-craft text-[9px] uppercase tracking-[.15em] text-[#dce8df]/65">Client</span>
-                  </div>
-                  <div className="relative z-10 flex flex-col items-center gap-4">
-                    <div className="flex gap-2">
-                      {flowSteps.map((step) => {
-                        const Icon = step.Icon;
-                        return <button key={step.id} type="button" data-testid={`flow-${step.id}`} onClick={() => setFlowStep(step.id)} aria-label={`Afficher ${step.label}`} className={`flow-node flex h-12 w-12 items-center justify-center rounded-full border sm:h-14 sm:w-14 ${flowStep === step.id ? 'active border-[#b9dcd2] bg-[#b9dcd2] text-[#12353a]' : 'border-[#b9dcd2]/30 bg-[#12353a] text-[#b9dcd2]/70'}`}><Icon size={17} strokeWidth={1.5} /></button>;
-                      })}
-                    </div>
-                    <span className="font-mono-craft text-[9px] uppercase tracking-[.15em] text-[#dce8df]/65">Protocoles</span>
-                  </div>
-                  <div className="relative z-10 flex flex-col items-center gap-4">
-                    <div className="flex h-16 w-16 items-center justify-center rounded-full border border-[#b9dcd2] bg-[#b9dcd2] text-[#12353a] sm:h-20 sm:w-20"><Server size={23} strokeWidth={1.4} /></div>
-                    <span className="font-mono-craft text-[9px] uppercase tracking-[.15em] text-[#dce8df]/65">Serveur</span>
-                  </div>
-                </div>
-              </Reveal>
-            </div>
-            <Reveal delay={2}>
-              <div className="mt-8 grid border-y border-[#b9dcd2]/20 py-6 sm:grid-cols-[100px_1fr_auto] sm:items-center sm:gap-8">
-                <span className="font-mono-craft text-[11px] text-[#ed6a3c]">{selectedFlow.number} — {selectedFlow.label}</span>
-                <div><h3 className="font-display text-3xl text-[#b9dcd2]">{selectedFlow.title}</h3><p className="mt-1 max-w-lg text-sm text-[#dce8df]/60">{selectedFlow.description}</p></div>
-                <ArrowRight className="mt-5 text-[#ed6a3c] sm:mt-0" size={21} />
-              </div>
-            </Reveal>
-          </div>
-        </section>
-
-        <section id="confiance" className="relative scroll-mt-20 overflow-hidden bg-[#082b32] px-7 py-28 text-[#f2eee4] sm:px-14 sm:py-36 lg:px-32">
-          <div className="absolute -right-32 -top-36 h-[500px] w-[500px] rounded-full border border-[#b9dcd2]/15" />
-          <div className="absolute -right-8 -top-12 h-[250px] w-[250px] rounded-full border border-[#b9dcd2]/15" />
-          <div className="relative mx-auto max-w-[1280px]">
-            <div className="grid gap-14 lg:grid-cols-[1fr_.82fr] lg:items-end">
-              <div>
-                <Reveal><span className="font-mono-craft text-[10px] uppercase tracking-[.2em] text-[#b9dcd2]/75">05 / La confiance</span></Reveal>
-                <Reveal delay={1}><h2 className="mt-5 max-w-3xl font-display text-[clamp(4rem,10vw,10rem)] font-semibold leading-[.72] tracking-[-.065em]">Relier,<br /><span className="text-[#f2eee4]">mais protéger.</span></h2></Reveal>
-                <Reveal delay={2}><p className="mt-11 max-w-md text-[15px] leading-7 text-[#dce8df]/75">Comprendre le réseau, c’est comprendre comment les données circulent — et comment sécuriser ces échanges.</p></Reveal>
-              </div>
-              <Reveal delay={2}>
-                <div className="rounded-sm border border-[#b9dcd2]/25 bg-[#10383f]/80 p-7 sm:p-9">
-                  <div className="flex items-center justify-between"><ShieldCheck size={31} strokeWidth={1.2} /><span className="font-mono-craft text-[9px] uppercase tracking-[.16em] text-[#b9dcd2]/75">Deux réflexes</span></div>
-                  <div className="mt-12 space-y-8">
-                    <div className="flex gap-5 border-b border-[#b9dcd2]/20 pb-7"><span className="font-mono-craft text-[10px] text-[#b9dcd2]/65">01</span><div><h3 className="font-display text-3xl">Pare-feu</h3><p className="mt-1 text-sm leading-6 text-[#dce8df]/75">Autorise ou bloque le trafic selon des règles de sécurité.</p></div></div>
-                    <div className="flex gap-5"><span className="font-mono-craft text-[10px] text-[#b9dcd2]/65">02</span><div><h3 className="font-display text-3xl">VPN</h3><p className="mt-1 text-sm leading-6 text-[#dce8df]/75">Établit un tunnel chiffré entre un appareil et un réseau distant.</p></div></div>
-                  </div>
-                </div>
-              </Reveal>
-            </div>
-            <Reveal delay={2}>
-              <div className="mt-28 flex flex-col justify-between gap-12 border-t border-[#b9dcd2]/25 pt-9 sm:flex-row sm:items-end">
-                <div>
-                  <div className="flex items-center gap-3 font-mono-craft text-[10px] uppercase tracking-[.18em] text-[#b9dcd2]/75"><Sparkles size={14} /> Fin de la traversée</div>
-                  <p className="mt-5 max-w-xl font-display text-[clamp(2rem,4vw,3.8rem)] leading-[.88]">Derrière chaque service numérique, une infrastructure relie les personnes et les systèmes.</p>
-                </div>
-                <button type="button" data-testid="button-retour-haut" onClick={() => scrollTo('depart')} className="group flex items-center gap-4 self-start rounded-full border border-[#b9dcd2]/70 px-5 py-3 font-mono-craft text-[10px] uppercase tracking-[.15em] transition-all hover:-translate-y-1 hover:bg-[#b9dcd2] hover:text-[#082b32] sm:self-end">Retour en haut <ArrowUp size={15} className="transition-transform group-hover:-translate-y-1" /></button>
-              </div>
-            </Reveal>
-          </div>
-        </section>
-      </main>
-
-      <footer className="bg-[#082b32] px-7 py-9 text-[#dce8df]/60 sm:px-14 lg:px-32">
-        <div className="mx-auto flex max-w-[1280px] flex-col justify-between gap-5 sm:flex-row sm:items-center">
-          <div className="font-mono-craft text-[9px] uppercase tracking-[.18em]">Réseau informatique <span className="text-[#ed6a3c]">·</span> une lecture pédagogique</div>
-          <div className="font-mono-craft text-[9px] uppercase tracking-[.14em]">IP · DNS · HTTP(S) · confiance</div>
-        </div>
-      </footer>
-    </div>
+    <AnimatePresence mode="wait" initial={false}>
+      <motion.div
+        key={location}
+        initial={reducedMotion ? false : { opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={reducedMotion ? undefined : { opacity: 0, y: -8 }}
+        transition={{ duration: reducedMotion ? 0 : 0.38, ease: 'easeOut' }}
+      >
+        <Switch>
+          <Route path="/" component={PresentationPage} />
+          <Route path="/territoires" component={TerritoriesPage} />
+          <Route path="/infrastructure" component={InfrastructurePage} />
+          <Route path="/conversation" component={ConversationPage} />
+          <Route path="/confiance" component={TrustPage} />
+          <Route component={NotFound} />
+        </Switch>
+      </motion.div>
+    </AnimatePresence>
   );
 }
 
@@ -453,8 +59,12 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
-        <AppPage />
-        <Toaster />
+        <MotionConfig reducedMotion="user">
+          <SiteShell>
+            <RoutedChapters />
+          </SiteShell>
+          <Toaster />
+        </MotionConfig>
       </TooltipProvider>
     </QueryClientProvider>
   );

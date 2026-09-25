@@ -1,0 +1,26 @@
+Please refactor the web presentation architecture from a single-page scrolling layout into a full Multi-Page Web Application structure (using client-side routing / React state view management).
+
+Key Structural Requirements:
+
+1. Navigation & Page Structure:
+- Each menu item in the persistent Header Navbar (PRÉSENTATION, LES TERRITOIRES, INFRASTRUCTURE, LA CONVERSATION, LA CONFIANCE) must load a completely separate, dedicated page/view.
+- Do NOT scroll down on the same page. When a user clicks a menu link, smoothly transition (using Framer Motion fade/slide page transitions) to that specific topic page.
+
+2. Page Layout Template (Apply to ALL 5 Pages):
+- Page Title Banner: A grand, stylized Hero-style title showcasing the chapter name (e.g., "LES TERRITOIRES"), matching the high-end typography used on the main home screen.
+- Aesthetic Background: Premium dark-themed background with soft glowing accents and high-resolution tech abstract visuals.
+- Core Content: Write concise, highly engaging, elegant French text that explains the specific chapter concepts clearly without clutter.
+- Practical Examples Box ("Exemples Concrets"): Every single page MUST feature a dedicated, visually highlighted card showing real-world examples (e.g., for "LES TERRITOIRES": LAN in a home or computer lab vs WAN connecting global networks).
+
+3. Chapter Breakdown Content:
+- Page 1 (PRÉSENTATION): Introduction to Computer Networks, core purpose, and digital interconnectedness.
+- Page 2 (LES TERRITOIRES): Geographical scope (LAN, MAN, WAN) with clear comparison cards and concrete examples.
+- Page 3 (INFRASTRUCTURE): Physical and logical components (Routers, Switches, Fiber optics, Wi-Fi) with interactive cards.
+- Page 4 (LA CONVERSATION): Network Protocols & Web Architecture (Client-Server, HTTP/HTTPS, IP, DNS) demonstrating web developer knowledge.
+- Page 5 (LA CONFIANCE): Network Security, Encryption, Firewalls, SSL/TLS, and modern web application security.
+
+4. UI Finish & UX:
+- Maintain 100% flawless academic French language.
+- Ensure a persistent top header navbar showing the active page state.
+- Include "Next Chapter / Chapitre Suivant" navigation buttons at the bottom of each page to fluidly guide the reader.
+-
