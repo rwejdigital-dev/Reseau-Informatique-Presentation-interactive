@@ -1,0 +1,7 @@
+[build]
+  base = "artifacts/mockup-sandbox"
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  CI = "false"
